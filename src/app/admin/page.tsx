@@ -8,9 +8,15 @@ type Servico = {
   preco: number;
 };
 
+type Agendamento = {
+  nome: string;
+  servico: string;
+  [key: string]: any;
+};
+
 export default function AdminPage() {
   const [aba, setAba] = useState<string>('dashboard');
-  const [agendamentos, setAgendamentos] = useState<any[]>([]);
+  const [agendamentos, setAgendamentos] = useState<Agendamento[]>([]);
   const [servicos, setServicos] = useState<Servico[]>([
     { id: 1, nome: 'Corte Clássico', preco: 35 },
     { id: 2, nome: 'Corte + Barba', preco: 55 },
@@ -19,14 +25,14 @@ export default function AdminPage() {
     { id: 5, nome: 'Higiene Facial', preco: 40 },
     { id: 6, nome: 'Pacote Completo', preco: 80 }
   ]);
-  const [novoServico, setNovoServico] = useState({ nome: '', preco: '' });
+  const [novoServico, setNovoServico] = useState<{ nome: string; preco: string }>({ nome: '', preco: '' });
   const [editando, setEditando] = useState<number | null>(null);
 
   useEffect(() => {
     carregarAgendamentos();
   }, []);
 
-  const carregarAgendamentos = async () => {
+  const carregarAgendamentos = async (): Promise<void> => {
     try {
       const response = await fetch('/api/agendamentos');
       const data = await response.json();
@@ -36,7 +42,7 @@ export default function AdminPage() {
     }
   };
 
-  const adicionarServico = () => {
+  const adicionarServico = (): void => {
     if (novoServico.nome && novoServico.preco) {
       const novoId = Math.max(...servicos.map(s => s.id), 0) + 1;
       setServicos([...servicos, { id: novoId, nome: novoServico.nome, preco: parseFloat(novoServico.preco) }]);
@@ -44,13 +50,13 @@ export default function AdminPage() {
     }
   };
 
-  const deletarServico = (id: number) => {
+  const deletarServico = (id: number): void => {
     if (confirm('Deletar este serviço?')) {
       setServicos(servicos.filter(s => s.id !== id));
     }
   };
 
-  const salvarEdicao = (id: number, nome: string, preco: number) => {
+  const salvarEdicao = (id: number, nome: string, preco: number): void => {
     setServicos(servicos.map(s => s.id === id ? { ...s, nome, preco } : s));
     setEditando(null);
   };
@@ -199,7 +205,7 @@ export default function AdminPage() {
               <h2 style={{ color: '#0a2342', marginTop: 0 }}>Serviços Disponíveis</h2>
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit,minmin(200px,1fr))',
+                gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
                 gap: '1rem'
               }}>
                 {servicos.map(servico => (
