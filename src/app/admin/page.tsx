@@ -2,10 +2,16 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+type Servico = {
+  id: number;
+  nome: string;
+  preco: number;
+};
+
 export default function AdminPage() {
-  const [aba, setAba] = useState('dashboard');
-  const [agendamentos, setAgendamentos] = useState([]);
-  const [servicos, setServicos] = useState([
+  const [aba, setAba] = useState<string>('dashboard');
+  const [agendamentos, setAgendamentos] = useState<any[]>([]);
+  const [servicos, setServicos] = useState<Servico[]>([
     { id: 1, nome: 'Corte Clássico', preco: 35 },
     { id: 2, nome: 'Corte + Barba', preco: 55 },
     { id: 3, nome: 'Barba Design', preco: 30 },
@@ -14,7 +20,7 @@ export default function AdminPage() {
     { id: 6, nome: 'Pacote Completo', preco: 80 }
   ]);
   const [novoServico, setNovoServico] = useState({ nome: '', preco: '' });
-  const [editando, setEditando] = useState(null);
+  const [editando, setEditando] = useState<number | null>(null);
 
   useEffect(() => {
     carregarAgendamentos();
@@ -38,13 +44,13 @@ export default function AdminPage() {
     }
   };
 
-  const deletarServico = (id) => {
+  const deletarServico = (id: number) => {
     if (confirm('Deletar este serviço?')) {
       setServicos(servicos.filter(s => s.id !== id));
     }
   };
 
-  const salvarEdicao = (id, nome, preco) => {
+  const salvarEdicao = (id: number, nome: string, preco: number) => {
     setServicos(servicos.map(s => s.id === id ? { ...s, nome, preco } : s));
     setEditando(null);
   };
@@ -193,7 +199,7 @@ export default function AdminPage() {
               <h2 style={{ color: '#0a2342', marginTop: 0 }}>Serviços Disponíveis</h2>
               <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))',
+                gridTemplateColumns: 'repeat(auto-fit,minmin(200px,1fr))',
                 gap: '1rem'
               }}>
                 {servicos.map(servico => (
